@@ -1,0 +1,33 @@
+{
+  "week": 6,
+  "rankings": [
+    {
+      "rank": 1,
+      "team": "Lamar the Merrier",
+      "record": "4-2",
+      "points": 720
+    },
+    {
+      "rank": 2,
+      "team": "The Gridiron Gurus",
+      "record": "4-2",
+      "points": 705
+    },
+    {
+      "rank": 3,
+      "team": "Mahomes Alone",
+      "record": "3-3",
+      "points": 690
+    }
+  ],
+  "commentary": [
+    {
+      "title": "Bye Week Blues",
+      "body": "Half the league started backup kickers. Chaos ensued."
+    },
+    {
+      "title": "Gurus Grind",
+      "body": "Steady scoring keeps them in the hunt."
+    }
+  ]
+}

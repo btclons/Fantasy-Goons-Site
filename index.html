@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fantasy Goons</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <a href="index.html" class="logo">🏈 Fantasy Goons</a>
+      <ul class="nav-links">
+        <li><a href="leaderboard.html">Leaderboard</a></li>
+        <li><a href="commentary.html">Commentary</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="container hero-inner">
+      <h1>Welcome to the Real Nigga League</h1>
+      <p class="subtitle">Weekly Rankings, Biased Commentary, Bets?</p>
+      <div class="cta">
+        <a class="btn btn-primary" href="leaderboard.html">View Leaderboard</a>
+        <a class="btn btn-secondary" href="commentary.html">Read Commentary</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="features container">
+    <div class="feature">
+      <h3>Weekly Rankings</h3>
+      <p>Fresh JSON-powered standings you can update in seconds.</p>
+    </div>
+    <div class="feature">
+      <h3>Goons Commentary</h3>
+      <p>Recaps, roasts, and memes — all preserved week by week.</p>
+    </div>
+    <div class="feature">
+      <h3>Static & Fast</h3>
+      <p>Host on GitHub Pages or Netlify. No backend required.</p>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <p>© <span id="year"></span> Fantasy Goons. All goonery reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

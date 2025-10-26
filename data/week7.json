@@ -1,0 +1,33 @@
+{
+  "week": 7,
+  "rankings": [
+    {
+      "rank": 1,
+      "team": "Mahomes Alone",
+      "record": "5-2",
+      "points": 832
+    },
+    {
+      "rank": 2,
+      "team": "The Gridiron Gurus",
+      "record": "5-2",
+      "points": 810
+    },
+    {
+      "rank": 3,
+      "team": "Lamar the Merrier",
+      "record": "4-3",
+      "points": 798
+    }
+  ],
+  "commentary": [
+    {
+      "title": "QB1 Energy",
+      "body": "Mahomes Alone casually drops a 40-burger."
+    },
+    {
+      "title": "Gurus Keep Pace",
+      "body": "They\u2019re allergic to losing streaks."
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "week": 8,
+  "rankings": [
+    {
+      "rank": 1,
+      "team": "The Gridiron Gurus",
+      "record": "6-2",
+      "points": 934
+    },
+    {
+      "rank": 2,
+      "team": "Mahomes Alone",
+      "record": "5-3",
+      "points": 876
+    },
+    {
+      "rank": 3,
+      "team": "Hurts So Good",
+      "record": "4-4",
+      "points": 845
+    }
+  ],
+  "commentary": [
+    {
+      "title": "Mahomes Alone Climbs Back On Top \ud83c\udfc6",
+      "body": "Despite byes, they keep cooking."
+    },
+    {
+      "title": "Hurts So Good? More Like Hurts So Bad \ud83d\ude2c",
+      "body": "Three straight Ls. Send help."
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "weeks": [
+    {
+      "week": 8,
+      "file": "week8.json",
+      "label": "Week 8"
+    },
+    {
+      "week": 7,
+      "file": "week7.json",
+      "label": "Week 7"
+    },
+    {
+      "week": 6,
+      "file": "week6.json",
+      "label": "Week 6"
+    }
+  ]
+}
