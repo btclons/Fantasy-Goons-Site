@@ -2,46 +2,315 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="light dark" />
   <title>Fantasy Goons — Leaderboard</title>
+
+  <!-- Styles -->
   <link rel="stylesheet" href="css/style.css" />
 </head>
+
 <body>
+  <!-- 🧭 Navbar -->
   <nav class="navbar">
     <div class="container">
       <a href="index.html" class="logo">🏈 Fantasy Goons</a>
       <ul class="nav-links">
-        <li><a href="leaderboard.html" class="active">Leaderboard</a></li>
-        <li><a href="commentary.html">Commentary</a></li>
+        <li><a href="leaderboard.html" class="active" data-title="Live Rankings">Leaderboard</a></li>
+        <li><a href="commentary.html" data-title="Weekly Insights">Commentary</a></li>
       </ul>
     </div>
   </nav>
 
+  <!-- 🏆 Main Content -->
   <main class="container leaderboard-page">
     <h1>League Power Rankings</h1>
 
-    <div class="controls">
-      <label for="week-select">Select Week:</label>
-      <select id="week-select"></select>
+    <!-- Stat Cards -->
+    <div class="stats-cards">
+      <div class="card"><h3>Top Scorer</h3><p id="top-team">Loading…</p></div>
+      <div class="card"><h3>League Avg</h3><p id="avg-points">--</p></div>
+      <div class="card"><h3>Closest Matchup</h3><p id="closest-match">--</p></div>
     </div>
 
+    <!-- Week Tabs -->
+    <div class="week-tabs" id="week-tabs"></div>
     <h2 id="week-title">Loading…</h2>
 
-    <div class="table-wrap">
-      <table id="leaderboard-table" aria-live="polite">
+    <!-- Standings -->
+    <div class="table-wrap fade-up">
+      <h3>Standings</h3>
+      <table id="standings-table">
         <thead>
-          <tr><th>Rank</th><th>Team</th><th>Record</th><th>Points</th></tr>
+          <tr>
+            <th>Rank</th>
+            <th>Team</th>
+            <th>Record</th>
+            <th>PF</th>
+            <th>PA</th>
+            <th>Streak</th>
+          </tr>
         </thead>
         <tbody></tbody>
       </table>
     </div>
 
-    <section id="commentary-section">
-      <h2>Weekly Commentary</h2>
-      <div id="commentary-content"></div>
-    </section>
+    <!-- Matchups -->
+    <div class="matchups-section fade-up" style="margin-top:30px;">
+      <button id="toggle-matchups" class="btn btn-secondary mobile-toggle">📊 Show Matchups</button>
+      <div id="matchups-container" class="table-wrap">
+        <h3>This Week’s Matchups</h3>
+        <table id="matchups-table">
+          <thead>
+            <tr>
+              <th>Team</th>
+              <th>PF</th>
+              <th>Opponent</th>
+              <th>Opp PF</th>
+              <th>Note</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Share Buttons -->
+    <div class="share-controls fade-up">
+      <button id="share-email" class="btn btn-primary">📧 Share via Email</button>
+      <button id="share-sms" class="btn btn-secondary">📱 Share via Text</button>
+    </div>
+
+    <!-- Send Weekly Update -->
+    <div class="send-update fade-up" style="text-align:center;margin-top:10px;">
+      <button id="send-update-btn" class="btn btn-primary">🚀 Send Weekly Update</button>
+    </div>
   </main>
 
-  <script src="js/leaderboard.js"></script>
+  <!-- ⬆️ Back to Top -->
+  <button id="back-to-top" aria-label="Back to top">⬆</button>
+
+  <!-- =========================
+       📊 Leaderboard Logic
+  ========================== -->
+  <script>
+  (function(){
+    const sheetUrl =
+      "https://docs.google.com/spreadsheets/d/e/2PACX-1vTs0y3FdEeiA63VHrIISxQLQq0j2uBX6MHsDYwD_RWmV6540Vfr2nDhv-bobm8iLs5lROwaVvJZabDL/pub?output=csv";
+
+    const weekTabs = document.getElementById("week-tabs");
+    const standingsBody = document.querySelector("#standings-table tbody");
+    const matchupsBody = document.querySelector("#matchups-table tbody");
+    const weekTitle = document.getElementById("week-title");
+
+    let data = [], weeks = [];
+
+    document.addEventListener("DOMContentLoaded", init);
+
+    async function init() {
+      const csv = await fetch(sheetUrl).then(r=>r.text());
+      const rows = csv.split(/\r?\n/).map(r=>r.split(","));
+      const header = rows[0].map(h=>h.trim());
+      const idx = {
+        week: header.indexOf("Week"),
+        type: header.indexOf("Type"),
+        rank: header.indexOf("Rank"),
+        team: header.indexOf("Team"),
+        record: header.indexOf("Record"),
+        pf: header.indexOf("PF"),
+        pa: header.indexOf("PA"),
+        streak: header.indexOf("Streak"),
+        opp: header.indexOf("Opponent"),
+        oppPF: header.indexOf("Opp PF"),
+        note: header.indexOf("Note")
+      };
+
+      data = rows.slice(1)
+        .filter(r => r.filter(Boolean).length > 0)
+        .map(r => ({
+          week: Number(r[idx.week]),
+          type: r[idx.type],
+          rank: Number(r[idx.rank]),
+          team: r[idx.team],
+          record: r[idx.record],
+          pf: parseFloat(r[idx.pf]),
+          pa: parseFloat(r[idx.pa]),
+          streak: r[idx.streak],
+          opp: r[idx.opp],
+          oppPF: parseFloat(r[idx.oppPF]),
+          owner: r[idx.owner],
+          note: r[idx.note]
+        }));
+
+      weeks = [...new Set(data.map(d=>d.week))].filter(Boolean).sort((a,b)=>a-b);
+      buildTabs();
+      loadWeek(weeks[weeks.length-1]);
+    }
+
+    function buildTabs(){
+      weekTabs.innerHTML = weeks.map((w,i)=>
+        `<button class="tab ${i===weeks.length-1?'active':''}" data-week="${w}">Week ${w}</button>`
+      ).join("");
+      weekTabs.querySelectorAll(".tab").forEach(btn=>{
+        btn.addEventListener("click",()=>{
+          weekTabs.querySelectorAll(".tab").forEach(b=>b.classList.remove("active"));
+          btn.classList.add("active");
+          loadWeek(Number(btn.dataset.week));
+        });
+      });
+    }
+
+    function loadWeek(week){
+      const standings = data.filter(d=>d.week===week && d.type==="Standings");
+      const matchups = data.filter(d=>d.week===week && d.type==="Matchup");
+      weekTitle.textContent = `Week ${week} Overview`;
+      standingsBody.innerHTML = "";
+      matchupsBody.innerHTML = "";
+
+      standings.sort((a,b)=>a.rank-b.rank).forEach(d=>{
+        standingsBody.innerHTML += `
+          <tr>
+            <td>${d.rank||""}</td>
+            <td>${d.team||""}</td>
+            <td>${d.record||""}</td>
+            <td>${isFinite(d.pf)?d.pf:""}</td>
+            <td>${isFinite(d.pa)?d.pa:""}</td>
+            <td>${d.streak||""}</td>
+          </tr>`;
+      });
+
+      matchups.forEach(d=>{
+        const diff = (isFinite(d.pf) && isFinite(d.oppPF)) ? (d.pf - d.oppPF) : null;
+        const resultClass = diff !== null ? diff > 0 ? "win" : diff < 0 ? "loss" : "tie" : "";
+        matchupsBody.innerHTML += `
+          <tr class="${resultClass}">
+            <td>${d.team||""}</td>
+            <td>${isFinite(d.pf)?d.pf:""}</td>
+            <td>${d.opp||""}</td>
+            <td>${isFinite(d.oppPF)?d.oppPF:""}</td>
+            <td>${d.note||""}</td>
+          </tr>`;
+      });
+
+      if(standings.length){
+        const top = standings.reduce((a,b)=>(b.pf||0)>(a.pf||0)?b:a);
+        document.getElementById("top-team").textContent = top.team;
+        const avg = standings.reduce((s,d)=>s+(isFinite(d.pf)?d.pf:0),0)/standings.length;
+        document.getElementById("avg-points").textContent = avg.toFixed(1);
+      }
+
+      if(matchups.length){
+        let closest = matchups[0], diff = Infinity;
+        matchups.forEach(m=>{
+          const d = Math.abs((m.pf||0)-(m.oppPF||0));
+          if(d<diff){ diff=d; closest=m; }
+        });
+        document.getElementById("closest-match").textContent =
+          `${closest.team} vs ${closest.opp} (${diff.toFixed(1)} pts)`;
+      }
+    }
+  })();
+  </script>
+
+  <!-- 📱 Collapsible Matchups + State Save -->
+  <script>
+  const toggleBtn = document.getElementById("toggle-matchups");
+  const matchupsContainer = document.getElementById("matchups-container");
+
+  function loadSavedState() {
+    if (window.innerWidth <= 670) {
+      const saved = localStorage.getItem("matchupsCollapsedMobile");
+      if (saved === "true") {
+        matchupsContainer.classList.add("collapsed");
+        toggleBtn.textContent = "📊 Show Matchups";
+      } else {
+        matchupsContainer.classList.remove("collapsed");
+        toggleBtn.textContent = "📊 Hide Matchups";
+      }
+    } else {
+      matchupsContainer.classList.remove("collapsed");
+      toggleBtn.style.display = "none";
+    }
+  }
+
+  function updateToggleState() {
+    if (window.innerWidth <= 670) {
+      toggleBtn.style.display = "block";
+      loadSavedState();
+    } else {
+      matchupsContainer.classList.remove("collapsed");
+      toggleBtn.style.display = "none";
+    }
+  }
+
+  toggleBtn.addEventListener("click", () => {
+    const isCollapsed = matchupsContainer.classList.toggle("collapsed");
+    if (window.innerWidth <= 670) {
+      localStorage.setItem("matchupsCollapsedMobile", isCollapsed);
+    }
+    toggleBtn.textContent = isCollapsed ? "📊 Show Matchups" : "📊 Hide Matchups";
+  });
+
+  window.addEventListener("resize", updateToggleState);
+  window.addEventListener("DOMContentLoaded", updateToggleState);
+  </script>
+
+  <!-- 🚀 Share + Backend -->
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const siteURL = window.location.href;
+    const subject = encodeURIComponent("Fantasy Goons Weekly Update");
+    const body = encodeURIComponent(`Check out this week's Fantasy Goons Power Rankings:\n\n${siteURL}`);
+
+    document.getElementById("share-email").addEventListener("click", () => {
+      window.location.href = `mailto:?subject=${subject}&body=${body}`;
+    });
+    document.getElementById("share-sms").addEventListener("click", () => {
+      window.location.href = `sms:?body=${body}`;
+    });
+
+    const sendBtn = document.getElementById("send-update-btn");
+    sendBtn.addEventListener("click", async () => {
+      const weekTitle = document.getElementById("week-title").textContent;
+      const message = `Fantasy Goons ${weekTitle} update sent!`;
+      try {
+        const response = await fetch("/api/send-update", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            week: weekTitle.replace(/\D/g, ""),
+            message
+          })
+        });
+        const data = await response.json();
+        if (data.success) alert(`✅ ${data.info}`);
+        else alert(`⚠️ Error: ${data.error || "Something went wrong."}`);
+      } catch (err) {
+        alert(`❌ Failed to reach backend: ${err.message}`);
+      }
+    });
+  });
+  </script>
+
+  <!-- 🪄 Floating Toggle Fade Behavior -->
+  <script>
+  let lastScrollY = window.scrollY;
+  const toggleBtn = document.getElementById("toggle-matchups");
+  if (toggleBtn) {
+    toggleBtn.style.transition = "transform 0.35s ease, opacity 0.35s ease";
+    toggleBtn.style.willChange = "transform, opacity";
+    window.addEventListener("scroll", () => {
+      const currentY = window.scrollY;
+      if (currentY > lastScrollY && currentY > 100) {
+        toggleBtn.style.transform = "translateY(100px)";
+        toggleBtn.style.opacity = "0";
+      } else {
+        toggleBtn.style.transform = "translateY(0)";
+        toggleBtn.style.opacity = "1";
+      }
+      lastScrollY = currentY;
+    });
+  }
+  </script>
 </body>
 </html>

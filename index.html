@@ -4,12 +4,16 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Fantasy Goons</title>
+
+  <!-- Fonts & Styles -->
   <link rel="stylesheet" href="css/style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
+
 <body>
+  <!-- Navbar -->
   <nav class="navbar">
     <div class="container">
       <a href="index.html" class="logo">🏈 Fantasy Goons</a>
@@ -20,40 +24,47 @@
     </div>
   </nav>
 
+  <!-- Hero -->
   <header class="hero">
     <div class="container hero-inner">
-      <h1>Welcome to the Real Nigga League</h1>
+      <h1>Welcome to the Real League</h1>
       <p class="subtitle">Weekly Rankings, Biased Commentary, Bets?</p>
+
       <div class="cta">
-        <a class="btn btn-primary" href="leaderboard.html">View Leaderboard</a>
-        <a class="btn btn-secondary" href="commentary.html">Read Commentary</a>
+        <a class="btn btn-primary" href="leaderboard.html">View Rankings</a>
+        <a class="btn btn-secondary" href="commentary.html">Check Commentary</a>
       </div>
     </div>
   </header>
 
-  <section class="features container">
-    <div class="feature">
+  <!-- Gold Info Boxes -->
+  <section class="info-section">
+    <a href="leaderboard.html" class="info-card link-card">
       <h3>Weekly Rankings</h3>
-      <p>Fresh JSON-powered standings you can update in seconds.</p>
-    </div>
-    <div class="feature">
-      <h3>Goons Commentary</h3>
-      <p>Recaps, roasts, and memes — all preserved week by week.</p>
-    </div>
-    <div class="feature">
-      <h3>Static & Fast</h3>
-      <p>Host on GitHub Pages or Netlify. No backend required.</p>
+      <p>Big Dogs & Little Pups</p>
+    </a>
+
+    <a href="commentary.html" class="info-card link-card">
+      <h3>Weekly Recap</h3>
+      <p>Weekly preview of triumphs & pain</p>
+    </a>
+
+    <div class="info-card">
+      <h3>Trade Center</h3>
+      <p>Fleece or nah</p>
     </div>
   </section>
 
+  <!-- Footer -->
   <footer class="footer">
     <div class="container">
       <p>© <span id="year"></span> Fantasy Goons. All goonery reserved.</p>
     </div>
   </footer>
 
+  <!-- JS -->
   <script>
-    document.getElementById('year').textContent = new Date().getFullYear();
+    document.getElementById("year").textContent = new Date().getFullYear();
   </script>
 </body>
 </html>
