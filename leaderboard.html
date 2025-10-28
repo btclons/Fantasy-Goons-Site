@@ -27,53 +27,48 @@
     <h1>League Power Rankings</h1>
 
     <!-- Stat Cards -->
-    <div class="stats-cards">
-      <div class="card"><h3>Top Scorer</h3><p id="top-team">Loading…</p></div>
-      <div class="card"><h3>League Avg</h3><p id="avg-points">--</p></div>
-      <div class="card"><h3>Closest Matchup</h3><p id="closest-match">--</p></div>
-    </div>
+  <div class="stats-cards">
+  <div class="card">
+    <h3>Top Scorer</h3>
+    <p id="top-team">Loading…</p>
+    <p id="top-score" class="top-score">--</p>
+  </div>
+
+  <div class="card">
+    <h3>Low Scorer</h3>
+    <p id="low-team">Loading…</p>
+    <p id="low-score" class="low-score">--</p>
+  </div>
+
+  <div class="card">
+    <h3>League Avg</h3>
+    <p id="avg-points">--</p>
+  </div>
+
+  <div class="card">
+    <h3>Closest Matchup</h3>
+    <p id="closest-match">--</p>
+  </div>
+</div>
 
     <!-- Week Tabs -->
     <div class="week-tabs" id="week-tabs"></div>
     <h2 id="week-title">Loading…</h2>
 
-    <!-- Standings -->
-    <div class="table-wrap fade-up">
-      <h3>Standings</h3>
-      <table id="standings-table">
-        <thead>
-          <tr>
-            <th>Rank</th>
-            <th>Team</th>
-            <th>Record</th>
-            <th>PF</th>
-            <th>PA</th>
-            <th>Streak</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
+<!-- Standings -->
+<section class="grid-section">
+  <h3>Standings</h3>
+  <div id="standings-grid" class="grid-cards"></div>
+</section>
 
-    <!-- Matchups -->
-    <div class="matchups-section fade-up" style="margin-top:30px;">
-      <button id="toggle-matchups" class="btn btn-secondary mobile-toggle">📊 Show Matchups</button>
-      <div id="matchups-container" class="table-wrap">
-        <h3>This Week’s Matchups</h3>
-        <table id="matchups-table">
-          <thead>
-            <tr>
-              <th>Team</th>
-              <th>PF</th>
-              <th>Opponent</th>
-              <th>Opp PF</th>
-              <th>Note</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-    </div>
+<!-- Matchups -->
+<section class="matchups-section fade-up" style="margin-top:30px;">
+  <button id="toggle-matchups" class="btn btn-secondary mobile-toggle">📊 Show Matchups</button>
+  <div id="matchups-container" class="grid-section">
+    <h3>This Week’s Matchups</h3>
+    <div id="matchups-grid" class="grid-cards"></div>
+  </div>
+</section>
 
     <!-- Share Buttons -->
     <div class="share-controls fade-up">
@@ -99,8 +94,6 @@
       "https://docs.google.com/spreadsheets/d/e/2PACX-1vTs0y3FdEeiA63VHrIISxQLQq0j2uBX6MHsDYwD_RWmV6540Vfr2nDhv-bobm8iLs5lROwaVvJZabDL/pub?output=csv";
 
     const weekTabs = document.getElementById("week-tabs");
-    const standingsBody = document.querySelector("#standings-table tbody");
-    const matchupsBody = document.querySelector("#matchups-table tbody");
     const weekTitle = document.getElementById("week-title");
 
     let data = [], weeks = [];
@@ -159,56 +152,87 @@
         });
       });
     }
+function loadWeek(week) {
+  const standings = data.filter(d => d.week === week && d.type === "Standings");
+  const matchups = data.filter(d => d.week === week && d.type === "Matchup");
+  weekTitle.textContent = `Week ${week} Overview`;
 
-    function loadWeek(week){
-      const standings = data.filter(d=>d.week===week && d.type==="Standings");
-      const matchups = data.filter(d=>d.week===week && d.type==="Matchup");
-      weekTitle.textContent = `Week ${week} Overview`;
-      standingsBody.innerHTML = "";
-      matchupsBody.innerHTML = "";
+  const standingsGrid = document.getElementById("standings-grid");
+  const matchupsGrid = document.getElementById("matchups-grid");
+  standingsGrid.innerHTML = "";
+  matchupsGrid.innerHTML = "";
 
-      standings.sort((a,b)=>a.rank-b.rank).forEach(d=>{
-        standingsBody.innerHTML += `
-          <tr>
-            <td>${d.rank||""}</td>
-            <td>${d.team||""}</td>
-            <td>${d.record||""}</td>
-            <td>${isFinite(d.pf)?d.pf:""}</td>
-            <td>${isFinite(d.pa)?d.pa:""}</td>
-            <td>${d.streak||""}</td>
-          </tr>`;
-      });
+  // 🏆 Standings Cards
+  standings.sort((a, b) => a.rank - b.rank).forEach(d => {
+    standingsGrid.innerHTML += `
+      <div class="card standing-card">
+        <div class="rank">${d.rank}</div>
+        <div class="team">${d.team}</div>
+        <div class="record">${d.record}</div>
+        <div class="pf">PF: ${isFinite(d.pf) ? d.pf : "--"}</div>
+        <div class="pa">PA: ${isFinite(d.pa) ? d.pa : "--"}</div>
+        <div class="streak">${d.streak || ""}</div>
+      </div>`;
+  });
 
-      matchups.forEach(d=>{
-        const diff = (isFinite(d.pf) && isFinite(d.oppPF)) ? (d.pf - d.oppPF) : null;
-        const resultClass = diff !== null ? diff > 0 ? "win" : diff < 0 ? "loss" : "tie" : "";
-        matchupsBody.innerHTML += `
-          <tr class="${resultClass}">
-            <td>${d.team||""}</td>
-            <td>${isFinite(d.pf)?d.pf:""}</td>
-            <td>${d.opp||""}</td>
-            <td>${isFinite(d.oppPF)?d.oppPF:""}</td>
-            <td>${d.note||""}</td>
-          </tr>`;
-      });
+  // ⚔️ Matchups Cards
+  matchups.forEach(d => {
+    const diff = (isFinite(d.pf) && isFinite(d.oppPF)) ? (d.pf - d.oppPF).toFixed(1) : "";
+    const result = diff > 0 ? "win" : diff < 0 ? "loss" : "tie";
+    matchupsGrid.innerHTML += `
+      <div class="card matchup-card ${result}">
+        <h4>${d.team}</h4>
+        <p><strong>${d.pf}</strong> vs <strong>${d.opp}</strong> (${d.oppPF})</p>
+        <p class="note">${d.note || ""}</p>
+        <span class="result-label">${result.toUpperCase()}</span>
+      </div>`;
+  });
 
-      if(standings.length){
-        const top = standings.reduce((a,b)=>(b.pf||0)>(a.pf||0)?b:a);
-        document.getElementById("top-team").textContent = top.team;
-        const avg = standings.reduce((s,d)=>s+(isFinite(d.pf)?d.pf:0),0)/standings.length;
-        document.getElementById("avg-points").textContent = avg.toFixed(1);
-      }
+  // 🧮 Stat Cards
+if (matchups.length) {
+  // 🏅 Build list of all scores (team + opponent)
+  const allScores = matchups.flatMap(m => [
+    { team: m.team, pf: m.pf },
+    { team: m.opp, pf: m.oppPF }
+  ]).filter(s => isFinite(s.pf));
 
-      if(matchups.length){
-        let closest = matchups[0], diff = Infinity;
-        matchups.forEach(m=>{
-          const d = Math.abs((m.pf||0)-(m.oppPF||0));
-          if(d<diff){ diff=d; closest=m; }
-        });
-        document.getElementById("closest-match").textContent =
-          `${closest.team} vs ${closest.opp} (${diff.toFixed(1)} pts)`;
+  // 🥇 Find top scorer
+  const top = allScores.reduce((a, b) => (b.pf > a.pf ? b : a));
+  document.getElementById("top-team").textContent = top.team;
+  document.getElementById("top-score").textContent = `${top.pf.toFixed(1)} pts`;
+
+  // 🧱 Find low scorer
+  const low = allScores.reduce((a, b) => (b.pf < a.pf ? b : a));
+  document.getElementById("low-team").textContent = low.team;
+  document.getElementById("low-score").textContent = `${low.pf.toFixed(1)} pts`;
+
+  // 📊 League average
+  const totalPoints = allScores.reduce((sum, s) => sum + s.pf, 0);
+  const avg = totalPoints / allScores.length;
+  document.getElementById("avg-points").textContent = avg.toFixed(1);
+
+  // ⚔️ Closest Matchup
+  let closest = null;
+  let diff = Infinity;
+
+  matchups.forEach(m => {
+    if (isFinite(m.pf) && isFinite(m.oppPF)) {
+      const margin = Math.abs(m.pf - m.oppPF);
+      if (margin < diff) {
+        diff = margin;
+        closest = m;
       }
     }
+  });
+
+    if (closest) {
+      document.getElementById("closest-match").textContent =
+        `${closest.team} vs ${closest.opp} (${diff.toFixed(1)} pts)`;
+    } else {
+      document.getElementById("closest-match").textContent = "No valid matchups found.";
+    }
+  }
+}
   })();
   </script>
 

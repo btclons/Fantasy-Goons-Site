@@ -513,3 +513,99 @@ section {
   0% { background-position: 200% center; }
   100% { background-position: -200% center; }
 }
+.grid-section {
+  margin-top: 30px;
+}
+
+.grid-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 14px 16px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+/* Standings */
+.standing-card .rank {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--gold);
+}
+.standing-card .team {
+  font-weight: 700;
+  color: var(--ink);
+}
+.standing-card .record {
+  margin-top: 4px;
+  color: #555;
+}
+.standing-card .pf,
+.standing-card .pa,
+.standing-card .streak {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+/* Matchups */
+.matchup-card {
+  position: relative;
+  text-align: center;
+  border-top: 5px solid transparent;
+}
+.matchup-card h4 {
+  margin-bottom: 4px;
+  font-weight: 700;
+}
+.matchup-card .note {
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+.matchup-card .result-label {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #fff;
+  background: rgba(0,0,0,0.4);
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+.matchup-card.win { 
+  border-color: #47c447; 
+  background: #f5fff5; 
+}
+.matchup-card.loss { 
+  border-color: #e74c3c; 
+  background: #fff5f5; 
+}
+.matchup-card.tie { 
+  border-color: #f1c40f; 
+  background: #fffbed; 
+}
+
+.top-score {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--green);
+  margin-top: 4px;
+}
+.low-score {
+  color: #b30000;
+  font-weight: bold;
+}
+
+.stats-cards .card:nth-child(2) {
+  background: linear-gradient(135deg, #5a0000, #ff9999);
+  color: #fff;
+}
