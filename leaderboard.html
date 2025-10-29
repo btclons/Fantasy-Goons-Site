@@ -1,51 +1,53 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="color-scheme" content="light dark" />
-  <title>Fantasy Goons — Leaderboard</title>
+  <title>Fantasy Goons â€” Leaderboard</title>
 
   <!-- Styles -->
   <link rel="stylesheet" href="css/style.css" />
 </head>
 
 <body>
-  <!-- 🧭 Navbar -->
-  <nav class="navbar">
-    <div class="container">
+  <!-- ðŸ§­ Navbar -->
+    <nav class="navbar">
+    <div class="container nav-inner">
       <a href="index.html" class="logo">🏈 Fantasy Goons</a>
+      <button class="menu-toggle" type="button" aria-label="Toggle menu" aria-expanded="false"><span aria-hidden="true">&#9776;</span></button>
       <ul class="nav-links">
         <li><a href="leaderboard.html" class="active" data-title="Live Rankings">Leaderboard</a></li>
         <li><a href="commentary.html" data-title="Weekly Insights">Commentary</a></li>
+        <li><a href="teams.html" data-title="Locker Room">Locker Room</a></li>
       </ul>
     </div>
   </nav>
 
-  <!-- 🏆 Main Content -->
+  <!-- ðŸ† Main Content -->
   <main class="container leaderboard-page">
-    <h1>League Power Rankings</h1>
+    <h1>Weekly Rankings & Matchups<h1>
 
     <!-- Stat Cards -->
   <div class="stats-cards">
-  <div class="card">
+  <div class="card card--top">
     <h3>Top Scorer</h3>
-    <p id="top-team">Loading…</p>
+    <p id="top-team">muhfuckin uhhhh...</p>
     <p id="top-score" class="top-score">--</p>
   </div>
 
-  <div class="card">
+  <div class="card card--low">
     <h3>Low Scorer</h3>
-    <p id="low-team">Loading…</p>
+    <p id="low-team">--</p>
     <p id="low-score" class="low-score">--</p>
   </div>
 
-  <div class="card">
-    <h3>League Avg</h3>
-    <p id="avg-points">--</p>
+  <div class="card card--blowout">
+    <h3>Largest Blow Out</h3>
+    <p id="blowout-match">--</p>
   </div>
 
-  <div class="card">
+  <div class="card card--closest">
     <h3>Closest Matchup</h3>
     <p id="closest-match">--</p>
   </div>
@@ -53,7 +55,7 @@
 
     <!-- Week Tabs -->
     <div class="week-tabs" id="week-tabs"></div>
-    <h2 id="week-title">Loading…</h2>
+    <h2 id="week-title">Loadingâ€¦</h2>
 
 <!-- Standings -->
 <section class="grid-section">
@@ -63,30 +65,30 @@
 
 <!-- Matchups -->
 <section class="matchups-section fade-up" style="margin-top:30px;">
-  <button id="toggle-matchups" class="btn btn-secondary mobile-toggle">📊 Show Matchups</button>
+  <button id="toggle-matchups" class="btn btn-secondary mobile-toggle">ðŸ“Š Show Matchups</button>
   <div id="matchups-container" class="grid-section">
-    <h3>This Week’s Matchups</h3>
+    <h3>This Weekâ€™s Matchups</h3>
     <div id="matchups-grid" class="grid-cards"></div>
   </div>
 </section>
 
     <!-- Share Buttons -->
     <div class="share-controls fade-up">
-      <button id="share-email" class="btn btn-primary">📧 Share via Email</button>
-      <button id="share-sms" class="btn btn-secondary">📱 Share via Text</button>
+      <button id="share-email" class="btn btn-primary">Share via Email</button>
+      <button id="share-sms" class="btn btn-secondary">Share via Text</button>
     </div>
 
     <!-- Send Weekly Update -->
     <div class="send-update fade-up" style="text-align:center;margin-top:10px;">
-      <button id="send-update-btn" class="btn btn-primary">🚀 Send Weekly Update</button>
+      <button id="send-update-btn" class="btn btn-primary">Send Weekly Update</button>
     </div>
   </main>
 
-  <!-- ⬆️ Back to Top -->
-  <button id="back-to-top" aria-label="Back to top">⬆</button>
+  <!-- â¬†ï¸ Back to Top -->
+  <button id="back-to-top" aria-label="Back to top">â¬†</button>
 
   <!-- =========================
-       📊 Leaderboard Logic
+       ðŸ“Š Leaderboard Logic
   ========================== -->
   <script>
   (function(){
@@ -162,7 +164,7 @@ function loadWeek(week) {
   standingsGrid.innerHTML = "";
   matchupsGrid.innerHTML = "";
 
-  // 🏆 Standings Cards
+  // ðŸ† Standings Cards
   standings.sort((a, b) => a.rank - b.rank).forEach(d => {
     standingsGrid.innerHTML += `
       <div class="card standing-card">
@@ -175,7 +177,7 @@ function loadWeek(week) {
       </div>`;
   });
 
-  // ⚔️ Matchups Cards
+  // âš”ï¸ Matchups Cards
   matchups.forEach(d => {
     const diff = (isFinite(d.pf) && isFinite(d.oppPF)) ? (d.pf - d.oppPF).toFixed(1) : "";
     const result = diff > 0 ? "win" : diff < 0 ? "loss" : "tie";
@@ -188,30 +190,49 @@ function loadWeek(week) {
       </div>`;
   });
 
-  // 🧮 Stat Cards
+  // ðŸ§® Stat Cards
 if (matchups.length) {
-  // 🏅 Build list of all scores (team + opponent)
-  const allScores = matchups.flatMap(m => [
-    { team: m.team, pf: m.pf },
-    { team: m.opp, pf: m.oppPF }
-  ]).filter(s => isFinite(s.pf));
+  // Build all scores from matchups (team + opponent)
+const allScores = matchups.flatMap(m => [
+  { team: m.team, pf: m.pf },
+  { team: m.opp,  pf: m.oppPF }
+]).filter(s => Number.isFinite(s.pf));
 
-  // 🥇 Find top scorer
-  const top = allScores.reduce((a, b) => (b.pf > a.pf ? b : a));
-  document.getElementById("top-team").textContent = top.team;
-  document.getElementById("top-score").textContent = `${top.pf.toFixed(1)} pts`;
+// Top scorer
+const top = allScores.reduce((a, b) => (b.pf > a.pf ? b : a));
+document.getElementById("top-team").textContent = top.team;
+document.getElementById("top-score").textContent = `${top.pf.toFixed(1)} pts`;
 
-  // 🧱 Find low scorer
-  const low = allScores.reduce((a, b) => (b.pf < a.pf ? b : a));
-  document.getElementById("low-team").textContent = low.team;
-  document.getElementById("low-score").textContent = `${low.pf.toFixed(1)} pts`;
+// Low scorer
+const low = allScores.reduce((a, b) => (b.pf < a.pf ? b : a));
+document.getElementById("low-team").textContent  = low.team;
+document.getElementById("low-score").textContent = `${low.pf.toFixed(1)} pts`;
 
-  // 📊 League average
-  const totalPoints = allScores.reduce((sum, s) => sum + s.pf, 0);
-  const avg = totalPoints / allScores.length;
-  document.getElementById("avg-points").textContent = avg.toFixed(1);
+// Largest blowout
+let blowout = null;
+let maxMargin = -Infinity;
 
-  // ⚔️ Closest Matchup
+matchups.forEach(m => {
+  if (Number.isFinite(m.pf) && Number.isFinite(m.oppPF)) {
+    const margin = Math.abs(m.pf - m.oppPF);
+    if (margin > maxMargin) {
+      maxMargin = margin;
+      blowout = m;
+    }
+  }
+});
+
+if (blowout && Number.isFinite(maxMargin)) {
+  const winnerIsHome = blowout.pf >= blowout.oppPF;
+  const winner = winnerIsHome ? blowout.team : blowout.opp;
+  const loser = winnerIsHome ? blowout.opp : blowout.team;
+  document.getElementById("blowout-match").textContent =
+    `${winner} over ${loser} (${maxMargin.toFixed(1)} pts)`;
+} else {
+  document.getElementById("blowout-match").textContent = "No eligible matchups.";
+}
+
+  // âš”ï¸ Closest Matchup
   let closest = null;
   let diff = Infinity;
 
@@ -236,7 +257,7 @@ if (matchups.length) {
   })();
   </script>
 
-  <!-- 📱 Collapsible Matchups + State Save -->
+  <!-- ðŸ“± Collapsible Matchups + State Save -->
   <script>
   const toggleBtn = document.getElementById("toggle-matchups");
   const matchupsContainer = document.getElementById("matchups-container");
@@ -246,10 +267,10 @@ if (matchups.length) {
       const saved = localStorage.getItem("matchupsCollapsedMobile");
       if (saved === "true") {
         matchupsContainer.classList.add("collapsed");
-        toggleBtn.textContent = "📊 Show Matchups";
+        toggleBtn.textContent = "Show Matchups";
       } else {
         matchupsContainer.classList.remove("collapsed");
-        toggleBtn.textContent = "📊 Hide Matchups";
+        toggleBtn.textContent = "Hide Matchups";
       }
     } else {
       matchupsContainer.classList.remove("collapsed");
@@ -272,14 +293,14 @@ if (matchups.length) {
     if (window.innerWidth <= 670) {
       localStorage.setItem("matchupsCollapsedMobile", isCollapsed);
     }
-    toggleBtn.textContent = isCollapsed ? "📊 Show Matchups" : "📊 Hide Matchups";
+    toggleBtn.textContent = isCollapsed ? "Show Matchups" : "Hide Matchups";
   });
 
   window.addEventListener("resize", updateToggleState);
   window.addEventListener("DOMContentLoaded", updateToggleState);
   </script>
 
-  <!-- 🚀 Share + Backend -->
+  <!-- ðŸš€ Share + Backend -->
   <script>
   document.addEventListener("DOMContentLoaded", () => {
     const siteURL = window.location.href;
@@ -307,19 +328,18 @@ if (matchups.length) {
           })
         });
         const data = await response.json();
-        if (data.success) alert(`✅ ${data.info}`);
-        else alert(`⚠️ Error: ${data.error || "Something went wrong."}`);
+        if (data.success) alert(`âœ… ${data.info}`);
+        else alert(`âš ï¸ Error: ${data.error || "Something went wrong."}`);
       } catch (err) {
-        alert(`❌ Failed to reach backend: ${err.message}`);
+        alert(`âŒ Failed to reach backend: ${err.message}`);
       }
     });
   });
   </script>
 
-  <!-- 🪄 Floating Toggle Fade Behavior -->
+  <!-- ðŸª„ Floating Toggle Fade Behavior -->
   <script>
   let lastScrollY = window.scrollY;
-  const toggleBtn = document.getElementById("toggle-matchups");
   if (toggleBtn) {
     toggleBtn.style.transition = "transform 0.35s ease, opacity 0.35s ease";
     toggleBtn.style.willChange = "transform, opacity";
@@ -336,5 +356,42 @@ if (matchups.length) {
     });
   }
   </script>
+<script>
+(function() {
+  const menuToggle = document.querySelector('.menu-toggle');
+  const navLinks = document.querySelector('.nav-links');
+  if (!menuToggle || !navLinks) return;
+
+  const setIcon = (isOpen) => {
+    menuToggle.innerHTML = isOpen ? '&times;' : '&#9776;';
+  };
+
+  const closeMenu = () => {
+    navLinks.classList.remove('show');
+    document.body.classList.remove('menu-open');
+    menuToggle.setAttribute('aria-expanded', 'false');
+    setIcon(false);
+  };
+
+  setIcon(false);
+
+  menuToggle.addEventListener('click', () => {
+    const isOpen = navLinks.classList.toggle('show');
+    document.body.classList.toggle('menu-open', isOpen);
+    menuToggle.setAttribute('aria-expanded', String(isOpen));
+    setIcon(isOpen);
+  });
+
+  navLinks.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', closeMenu);
+  });
+
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 768) closeMenu();
+  });
+})();
+</script>
 </body>
 </html>
+
+

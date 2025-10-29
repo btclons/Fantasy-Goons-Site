@@ -1,18 +1,20 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fantasy Goons — Commentary</title>
+  <title>Fantasy Goons â€” Commentary</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-  <nav class="navbar">
-    <div class="container">
+    <nav class="navbar">
+    <div class="container nav-inner">
       <a href="index.html" class="logo">🏈 Fantasy Goons</a>
+      <button class="menu-toggle" type="button" aria-label="Toggle menu" aria-expanded="false"><span aria-hidden="true">&#9776;</span></button>
       <ul class="nav-links">
         <li><a href="leaderboard.html">Leaderboard</a></li>
         <li><a href="commentary.html" class="active">Commentary</a></li>
+        <li><a href="teams.html">Locker Room</a></li>
       </ul>
     </div>
   </nav>
@@ -28,9 +30,46 @@
       <h3>Tip: Add Comments from Others</h3>
       <p>
         If you want other teams to chime in, you can embed a free comment widget (e.g. Giscus or Utterances)
-        at the bottom of <code>leaderboard.html</code> — they use your GitHub repo as storage and require no server.
+        at the bottom of <code>leaderboard.html</code> â€” they use your GitHub repo as storage and require no server.
       </p>
     </section>
   </main>
+<script>
+(function() {
+  const menuToggle = document.querySelector('.menu-toggle');
+  const navLinks = document.querySelector('.nav-links');
+  if (!menuToggle || !navLinks) return;
+
+  const setIcon = (isOpen) => {
+    menuToggle.innerHTML = isOpen ? '&times;' : '&#9776;';
+  };
+
+  const closeMenu = () => {
+    navLinks.classList.remove('show');
+    document.body.classList.remove('menu-open');
+    menuToggle.setAttribute('aria-expanded', 'false');
+    setIcon(false);
+  };
+
+  setIcon(false);
+
+  menuToggle.addEventListener('click', () => {
+    const isOpen = navLinks.classList.toggle('show');
+    document.body.classList.toggle('menu-open', isOpen);
+    menuToggle.setAttribute('aria-expanded', String(isOpen));
+    setIcon(isOpen);
+  });
+
+  navLinks.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', closeMenu);
+  });
+
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 768) closeMenu();
+  });
+})();
+</script>
 </body>
 </html>
+
+

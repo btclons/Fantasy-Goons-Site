@@ -1,0 +1,215 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fantasy Goons â€” Meet the Teams</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+  <!-- ðŸ§­ Navbar -->
+  <nav class="navbar">
+    <div class="container nav-inner">
+      <a href="index.html" class="logo">🏈 Fantasy Goons</a>
+      <button class="menu-toggle" type="button" aria-label="Toggle menu" aria-expanded="false"><span aria-hidden="true">&#9776;</span></button>
+      <ul class="nav-links">
+        <li><a href="leaderboard.html">Leaderboard</a></li>
+        <li><a href="commentary.html">Commentary</a></li>
+        <li><a href="teams.html" class="active">Locker Room</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ðŸ† Teams Section -->
+  <main class="container teams-page">
+    <h1>League Legends & Stats</h1>
+    <p style="text-align:center; margin-bottom: 28px;">Tap a card to flip and reveal all-time stats.</p>
+
+    <section class="records-board" aria-label="League Record Book">
+      <h2>League Record Book</h2>
+      <div class="records-grid" id="records-grid"></div>
+    </section>
+
+    <div id="teams-grid" class="teams-grid" aria-live="polite"></div>
+  </main>
+
+ <script>
+(async function() {
+  const sheetUrl =
+    "https://docs.google.com/spreadsheets/d/e/2PACX-1vTs0y3FdEeiA63VHrIISxQLQq0j2uBX6MHsDYwD_RWmV6540Vfr2nDhv-bobm8iLs5lROwaVvJZabDL/pub?gid=1866028284&single=true&output=csv"; // replace with your actual published link
+
+  const csv = await fetch(sheetUrl).then(r => r.text());
+  const rows = csv.split(/\r?\n/).map(r => r.split(","));
+  const header = rows[0].map(h => h.trim());
+
+  const idx = {
+    year: header.indexOf("Year"),
+    name: header.indexOf("Name"),
+    team: header.indexOf("Team"),
+    pf: header.indexOf("PF"),
+    pa: header.indexOf("PA"),
+    wins: header.indexOf("Wins"),
+    losses: header.indexOf("Losses")
+  };
+
+  const data = rows.slice(1)
+    .filter(r => r.filter(Boolean).length > 0)
+    .map(r => ({
+      year: Number(r[idx.year]),
+      name: r[idx.name]?.trim(),
+      team: r[idx.team]?.trim(),
+      pf: parseFloat(r[idx.pf]) || 0,
+      pa: parseFloat(r[idx.pa]) || 0,
+      wins: parseInt(r[idx.wins], 10) || 0,
+      losses: parseInt(r[idx.losses], 10) || 0
+    }));
+
+  // Aggregate by owner
+  const summary = {};
+  data.forEach(row => {
+    if (!row.name) return;
+    if (!summary[row.name]) {
+      summary[row.name] = {
+        owner: row.name,
+        teams: new Set(),
+        wins: 0,
+        losses: 0,
+        pf: 0,
+        pa: 0,
+        seasons: 0
+      };
+    }
+    const s = summary[row.name];
+    s.teams.add(row.team);
+    s.wins += row.wins;
+    s.losses += row.losses;
+    s.pf += row.pf;
+    s.pa += row.pa;
+    s.seasons++;
+  });
+
+  // Build array and sort by win %
+  const owners = Object.values(summary).map(o => ({
+    ...o,
+    winPct: o.wins + o.losses > 0 ? o.wins / (o.wins + o.losses) : 0
+  })).sort((a, b) => b.winPct - a.winPct);
+
+  const ownerDetails = {
+   "Evan": { photo: "images/Evan.jpg", blurb: "You got a snapchat?" },
+   "Amski": {photo: "images/Amski.jpg", blurb: "Skinny Pussy is on one tonight"},
+   "Blakers": {photo: "images/Blakers.jpg", blurb: "Alaluh Ahkbar"},
+   "Owen": {photo: "images/Owen.jpg", blurb: "I'm a fat faggot and lost to Big Lons"},
+   "Saf": {photo: "images/saf.jpg", blurb: "Alaluh Ahkbar Blakers"},
+   "HunnyB": {photo: "images/HunnyB.jpg", blurb: "Biscuit without the butter"},
+   "Stevo": {photo: "images/Stevo.jpg", blurb: "So you're saying I can't suck off Jordan Love??"},
+   "Murph": {photo: "images/Murph.jpg", blurb: "DaColdest McChicken6767"},
+   "BillyJ": {photo: "images/BillyJ.jpg", blurb: "BillyJHunchoPussy"},
+   "Beech": {photo: "images/Beech.jpg", blurb: "Simple Brain"},
+   "Seebs": {photo: "images/Seebs.jpg", blurb: "Retarded Question Master"},
+   "Big Lons": {photo: "images/Big Lons.jpg", blurb: "Don't Let Me Do You Like That"},
+   "PercRat": {photo: "images/PercRat.jpg", blurb: "ayy uhh you gonna eat that mate?"},
+   "Lebby": {photo: "images/Lebby.jpg", blurb: "I'm down for a beer but I have my friends frog's cat's birthday dinner first"},
+  };
+
+  const slugify = value =>
+    value.toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "");
+
+  const records = [
+    { label: "Most Wins in a Season", stat: "13", name: "Owen" },
+    { label: "Longest Winning Streak", stat: "7", name: "Lonso" },
+    { label: "Most Losses in a Season", stat: "12", name: "Percy" },
+    { label: "Longest Losing Streak", stat: "11", name: "Percy" }
+  ];
+
+  const recordsGrid = document.getElementById("records-grid");
+  recordsGrid.innerHTML = records.map(record => `
+    <article class="record-card">
+      <h3>${record.label}</h3>
+      <p class="record-value">${record.stat}</p>
+      <p class="record-owner">${record.name}</p>
+    </article>
+  `).join("");
+
+  const grid = document.querySelector(".teams-grid");
+  grid.innerHTML = owners.map(o => `
+    <div class="team-card">
+      <div class="team-inner">
+        ${(function(owner) {
+          const slug = slugify(owner.owner);
+          const meta = ownerDetails[owner.owner] || {};
+          const photoSrc = meta.photo || `images/${slug}.jpg`;
+          const blurb = meta.blurb || "Tap to flip for all-time stats.";
+          return `
+            <div class="team-front">
+              <img src="${photoSrc}" alt="${owner.owner} team photo" loading="lazy" onerror="this.classList.add('image-missing'); this.removeAttribute('onerror');" />
+              <div class="team-front-overlay">
+                <h3>${owner.owner}</h3>
+                <p>${blurb}</p>
+              </div>
+            </div>
+          `;
+        })(o)}
+        <div class="team-back">
+          <h4>${o.owner}</h4>
+          <p><strong>Seasons:</strong> ${o.seasons}</p>
+          <p><strong>Record:</strong> ${o.wins}-${o.losses} (${(o.winPct * 100).toFixed(1)}%)</p>
+          <p><strong>Total PF:</strong> ${o.pf.toFixed(1)}</p>
+          <p><strong>Total PA:</strong> ${o.pa.toFixed(1)}</p>
+          <p><strong>Teams:</strong> ${[...o.teams].join(", ")}</p>
+        </div>
+      </div>
+    </div>
+  `).join("");
+
+  // Flip effect
+  document.querySelectorAll(".team-card").forEach(card => {
+    card.addEventListener("click", () => card.classList.toggle("flipped"));
+  });
+})();
+</script>
+
+<script>
+(function() {
+  const menuToggle = document.querySelector('.menu-toggle');
+  const navLinks = document.querySelector('.nav-links');
+  if (!menuToggle || !navLinks) return;
+
+  const setIcon = (isOpen) => {
+    menuToggle.innerHTML = isOpen ? '&times;' : '&#9776;';
+  };
+
+  const closeMenu = () => {
+    navLinks.classList.remove('show');
+    document.body.classList.remove('menu-open');
+    menuToggle.setAttribute('aria-expanded', 'false');
+    setIcon(false);
+  };
+
+  setIcon(false);
+
+  menuToggle.addEventListener('click', () => {
+    const isOpen = navLinks.classList.toggle('show');
+    document.body.classList.toggle('menu-open', isOpen);
+    menuToggle.setAttribute('aria-expanded', String(isOpen));
+    setIcon(isOpen);
+  });
+
+  navLinks.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', closeMenu);
+  });
+
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 768) closeMenu();
+  });
+})();
+</script>
+
+</body>
+</html>
+
+

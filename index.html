@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -13,13 +13,14 @@
 </head>
 
 <body>
-  <!-- Navbar -->
-  <nav class="navbar">
-    <div class="container">
+      <nav class="navbar">
+    <div class="container nav-inner">
       <a href="index.html" class="logo">🏈 Fantasy Goons</a>
+      <button class="menu-toggle" type="button" aria-label="Toggle menu" aria-expanded="false"><span aria-hidden="true">&#9776;</span></button>
       <ul class="nav-links">
         <li><a href="leaderboard.html">Leaderboard</a></li>
         <li><a href="commentary.html">Commentary</a></li>
+        <li><a href="teams.html">Locker Room</a></li>
       </ul>
     </div>
   </nav>
@@ -27,8 +28,8 @@
   <!-- Hero -->
   <header class="hero">
     <div class="container hero-inner">
-      <h1>Welcome to the Real League</h1>
-      <p class="subtitle">Weekly Rankings, Biased Commentary, Bets?</p>
+      <h1>Welcome to the Real Nigga League </h1>
+      <p class="subtitle">Weekly Rankings, Biased Commentary, Fuck you Owen??</p>
 
       <div class="cta">
         <a class="btn btn-primary" href="leaderboard.html">View Rankings</a>
@@ -46,19 +47,20 @@
 
     <a href="commentary.html" class="info-card link-card">
       <h3>Weekly Recap</h3>
-      <p>Weekly preview of triumphs & pain</p>
+      <p>Hot Takes & Opinions </p>
     </a>
 
-    <div class="info-card">
-      <h3>Trade Center</h3>
-      <p>Fleece or nah</p>
+    <a href="teams.html" class="info-card link-card">
+      <h3>Locker Room</h3>
+      <p>Meet the Scumbags</p>
+    </a>
     </div>
   </section>
 
   <!-- Footer -->
   <footer class="footer">
     <div class="container">
-      <p>© <span id="year"></span> Fantasy Goons. All goonery reserved.</p>
+      <p>© <span id="year"></span> Fantasy Goons - Pussy Tears & Dry Socks</p>
     </div>
   </footer>
 
@@ -66,5 +68,45 @@
   <script>
     document.getElementById("year").textContent = new Date().getFullYear();
   </script>
+
+<script>
+(function() {
+  const menuToggle = document.querySelector('.menu-toggle');
+  const navLinks = document.querySelector('.nav-links');
+  if (!menuToggle || !navLinks) return;
+
+  const setIcon = (isOpen) => {
+    menuToggle.innerHTML = isOpen ? '&times;' : '&#9776;';
+  };
+
+  const closeMenu = () => {
+    navLinks.classList.remove('show');
+    document.body.classList.remove('menu-open');
+    menuToggle.setAttribute('aria-expanded', 'false');
+    setIcon(false);
+  };
+
+  setIcon(false);
+
+  menuToggle.addEventListener('click', () => {
+    const isOpen = navLinks.classList.toggle('show');
+    document.body.classList.toggle('menu-open', isOpen);
+    menuToggle.setAttribute('aria-expanded', String(isOpen));
+    setIcon(isOpen);
+  });
+
+  navLinks.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', closeMenu);
+  });
+
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 768) closeMenu();
+  });
+})();
+</script>
+
 </body>
 </html>
+
+
+
