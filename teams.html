@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fantasy Goons â€” Meet the Teams</title>
+  <title>Fantasy Goons - Meet the Teams</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
 
@@ -23,11 +23,11 @@
 
   <!-- ðŸ† Teams Section -->
   <main class="container teams-page">
-    <h1>League Legends & Stats</h1>
+    <h1>League Legends and Credentials</h1>
     <p style="text-align:center; margin-bottom: 28px;">Tap a card to flip and reveal all-time stats.</p>
 
     <section class="records-board" aria-label="League Record Book">
-      <h2>League Record Book</h2>
+      <h2>Ball Don't Lie</h2>
       <div class="records-grid" id="records-grid"></div>
     </section>
 
@@ -105,11 +105,11 @@
    "Stevo": {photo: "images/Stevo.jpg", blurb: "So you're saying I can't suck off Jordan Love??"},
    "Murph": {photo: "images/Murph.jpg", blurb: "DaColdest McChicken6767"},
    "BillyJ": {photo: "images/BillyJ.jpg", blurb: "BillyJHunchoPussy"},
-   "Beech": {photo: "images/Beech.jpg", blurb: "Simple Brain"},
+   "Beech": {photo: "images/Beech.jpg", blurb: "Simple Brain Commish"},
    "Seebs": {photo: "images/Seebs.jpg", blurb: "Retarded Question Master"},
    "Big Lons": {photo: "images/Big Lons.jpg", blurb: "Don't Let Me Do You Like That"},
    "PercRat": {photo: "images/PercRat.jpg", blurb: "ayy uhh you gonna eat that mate?"},
-   "Lebby": {photo: "images/Lebby.jpg", blurb: "I'm down for a beer but I have my friends frog's cat's birthday dinner first"},
+   "Lebby": {photo: "images/Lebby.jpg", blurb: "Touch some grass"},
   };
 
   const slugify = value =>
@@ -119,21 +119,59 @@
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/(^-|-$)/g, "");
 
+  const hallOfFame = [
+    { year: 2024, owner: "Owen" },
+    { year: 2023, owner: "Owen" },
+    { year: 2022, owner: "Evan" },
+    { year: 2021, owner: "Amski" },
+  ];
+
+  const hallOfShame = [
+    { year: 2024, owner: "Big Lons" },
+    { year: 2023, owner: "BillyJ" },
+    { year: 2022, owner: "Lebby" },
+    { year: 2021, owner: "Beech" }
+  ];
+
+  const championWins = hallOfFame.reduce((acc, entry) => {
+    acc[entry.owner] = (acc[entry.owner] || 0) + 1;
+    return acc;
+  }, {});
+
+  const shameTally = hallOfShame.reduce((acc, entry) => {
+    acc[entry.owner] = (acc[entry.owner] || 0) + 1;
+    return acc;
+  }, {});
+
   const records = [
-    { label: "Most Wins in a Season", stat: "13", name: "Owen" },
-    { label: "Longest Winning Streak", stat: "7", name: "Lonso" },
+    { label: "Most Wins in a Season", stat: "11", name: "Owen" },
     { label: "Most Losses in a Season", stat: "12", name: "Percy" },
-    { label: "Longest Losing Streak", stat: "11", name: "Percy" }
+    { label: "Longest Winning Streak", stat: "7", name: "Lonso" },
+    { label: "Longest Losing Streak", stat: "11", name: "Percy" },
   ];
 
   const recordsGrid = document.getElementById("records-grid");
-  recordsGrid.innerHTML = records.map(record => `
-    <article class="record-card">
-      <h3>${record.label}</h3>
-      <p class="record-value">${record.stat}</p>
-      <p class="record-owner">${record.name}</p>
+  recordsGrid.innerHTML = `
+    <article class="record-card record-card--hof">
+      <h3>Hall of Fame</h3>
+      <ul class="record-list">
+        ${hallOfFame.map(entry => `<li><span>${entry.year}:</span> ${entry.owner}</li>`).join("")}
+      </ul>
     </article>
-  `).join("");
+    <article class="record-card record-card--hos">
+      <h3>Hall of Shame</h3>
+      <ul class="record-list">
+        ${hallOfShame.map(entry => `<li><span>${entry.year}:</span> ${entry.owner}</li>`).join("")}
+      </ul>
+    </article>
+    ${records.map(record => `
+      <article class="record-card">
+        <h3>${record.label}</h3>
+        <p class="record-value">${record.stat}</p>
+        <p class="record-owner">${record.name}</p>
+      </article>
+    `).join("")}
+  `;
 
   const grid = document.querySelector(".teams-grid");
   grid.innerHTML = owners.map(o => `
@@ -151,6 +189,8 @@
                 <h3>${owner.owner}</h3>
                 <p>${blurb}</p>
               </div>
+              ${championWins[owner.owner] ? `<span class="team-badge team-badge--champ" title="League Champion">${"🥇".repeat(championWins[owner.owner])}</span>` : ""}
+              ${shameTally[owner.owner] ? `<span class="team-badge team-badge--shame" title="Hall of Shame">${"🤡".repeat(shameTally[owner.owner])}</span>` : ""}
             </div>
           `;
         })(o)}

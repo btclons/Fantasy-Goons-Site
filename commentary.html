@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fantasy Goons â€” Commentary</title>
+  <title>Fantasy Goons — Commentary</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-    <nav class="navbar">
+  <nav class="navbar">
     <div class="container nav-inner">
       <a href="index.html" class="logo">🏈 Fantasy Goons</a>
       <button class="menu-toggle" type="button" aria-label="Toggle menu" aria-expanded="false"><span aria-hidden="true">&#9776;</span></button>
@@ -20,56 +20,113 @@
   </nav>
 
   <main class="container commentary-page">
-    <h1>Goons Commentary Archive</h1>
-    <p>
-      Commentary lives next to each week's leaderboard.
-      Visit the <a href="leaderboard.html">Leaderboard</a> and pick a week to read its roast notes.
-    </p>
+    <h1>Highlights &amp; Tales of the Tape</h1>
 
-    <section class="tip">
-      <h3>Tip: Add Comments from Others</h3>
+    <section class="commentary-entry">
+    <h3>Highlights</h3>
       <p>
-        If you want other teams to chime in, you can embed a free comment widget (e.g. Giscus or Utterances)
-        at the bottom of <code>leaderboard.html</code> â€” they use your GitHub repo as storage and require no server.
+      - Fleece Alert: <strong>Lons</strong> acquires Barkley and Rashee & trades away Jefferson & Kamara to <strong>Biscuit</strong>.
+      </p>
+
+      <p>
+      - Streak Alert: <strong>Saf</strong> is somehow on a 5 game win streak with a depleted ass squad.
+      </p>
+
+      <p>
+      -Streak Alert: <strong>PercRat</strong> is on a 5 game lose streak, which comes at no surprise 
+      <p>
+    </section>
+
+    <section class="commentary-entry">
+      <h3>Week 8 Recap — Panic Button Watch</h3>
+      <p>
+        - <strong>Big Motherfucking Lons</strong>, talk of the town right now, brings <strong>Retard Fat O </strong>to tears again after aquiring Barkley and Rice
+        then running them down his thoat. Keep running that fat ass mouth, you knows watching
+      </p>    
+      <p>
+       - <strong>Big Murph</strong> with the all you can eat buffet putting up 174 on <strong>Tiny Mike</strong>. Might be the start to something special...
+      </p>
+
+      <p>
+       - <strong>Seebs</strong> needed to be humbled and no better team to do it than <strong>Blakers</strong>. 
+        Somewhere in that chaos <strong>Saf</strong> is quietly on the hunt with a 5 game win streak,
+        in a shit bowl with Willy.
+      </p>
+
+      <p>
+        - <strong>HunnyB</strong> unfortunately lost half his team and proceeded to get further fucked on by a 52.78 point margin from <strong>Lebster</strong>. 
+        <strong>Evbot</strong> smacks <strong>Stevo</strong> sending him on his descension towards the bottom of the shit stack, just like the packers.
+      </p>
+      
+      <p>
+       - <strong>Amski</strong> fought the good fight and moves on to 2-6, looking to make headway on the rest of the season. Eat a burger you skinny faggot. 
+      </p>
+    </section>
+
+    <section class="commentary-entry">
+      <h3>Week 9 Look-Ahead — Where boys go to become men (or gay if you're Owen)</h3>
+      <p>
+        - <strong>Game of the Week:</strong> <em>Saf (6-2, W-5)</em> vs. <em>type shit (3-5, W-2)</em>. <strong>Saf</strong> is on the kind of heater that makes
+        you wonder why the fuck we even play in first place but <strong>Big Murph</strong> has shown signs of life recently. An unstoppable force meets and immovable object...
+      </p>
+
+      <p>
+       - <strong>EvBot</strong> now sits on top of the standings and now faces a confident <strong>Amski</strong>. 
+      </p>
+
+      <p>
+       - Battle of the roommates:<strong>Leb</strong> vs. <strong>BillyJ</strong> big matchup which might be the 
+        decider for a first-round bye and a little crybaby.
+      </p>
+      
+      <p>
+      <strong>Blakers</strong> dares to squable with<strong>Big Lons</strong> and his new team. gimme them cheeks Osama 
+      </p>
+
+      <p>
+        - Down under, <strong>Biscuit</strong> and <strong>Percy</strong> battle in a high stakes loser gets fucked on match
+      </p>
+
+      <P>
+        <strong>Seebs</strong> aganst a desperate <strong>Beech</strong> hungry for anything he can get. Not looking so good for the latter...
       </p>
     </section>
   </main>
-<script>
-(function() {
-  const menuToggle = document.querySelector('.menu-toggle');
-  const navLinks = document.querySelector('.nav-links');
-  if (!menuToggle || !navLinks) return;
 
-  const setIcon = (isOpen) => {
-    menuToggle.innerHTML = isOpen ? '&times;' : '&#9776;';
-  };
+  <script>
+  (function() {
+    const menuToggle = document.querySelector('.menu-toggle');
+    const navLinks = document.querySelector('.nav-links');
+    if (!menuToggle || !navLinks) return;
 
-  const closeMenu = () => {
-    navLinks.classList.remove('show');
-    document.body.classList.remove('menu-open');
-    menuToggle.setAttribute('aria-expanded', 'false');
+    const setIcon = (isOpen) => {
+      menuToggle.innerHTML = isOpen ? '&times;' : '&#9776;';
+    };
+
+    const closeMenu = () => {
+      navLinks.classList.remove('show');
+      document.body.classList.remove('menu-open');
+      menuToggle.setAttribute('aria-expanded', 'false');
+      setIcon(false);
+    };
+
     setIcon(false);
-  };
 
-  setIcon(false);
+    menuToggle.addEventListener('click', () => {
+      const isOpen = navLinks.classList.toggle('show');
+      document.body.classList.toggle('menu-open', isOpen);
+      menuToggle.setAttribute('aria-expanded', String(isOpen));
+      setIcon(isOpen);
+    });
 
-  menuToggle.addEventListener('click', () => {
-    const isOpen = navLinks.classList.toggle('show');
-    document.body.classList.toggle('menu-open', isOpen);
-    menuToggle.setAttribute('aria-expanded', String(isOpen));
-    setIcon(isOpen);
-  });
+    navLinks.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', closeMenu);
+    });
 
-  navLinks.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', closeMenu);
-  });
-
-  window.addEventListener('resize', () => {
-    if (window.innerWidth > 768) closeMenu();
-  });
-})();
-</script>
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 768) closeMenu();
+    });
+  })();
+  </script>
 </body>
 </html>
-
-

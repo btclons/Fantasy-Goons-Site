@@ -181,7 +181,7 @@ html, body {
   text-shadow: 0 0 8px rgba(255,255,255,0.45);
 }
 
-@media (max-width: 600px) {
+@media (max-width: 100px) {
   .stats-cards {
     flex-direction: column;
     align-items: stretch;
@@ -645,6 +645,14 @@ section {
   }
 }
 
+@media (min-width: 360px) and (max-width: 480px) {
+  .grid-cards { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .matchup-card { padding: 10px 12px; font-size: 0.9rem; }
+}
+@media (max-width: 359px) {
+  .grid-cards { grid-template-columns: 1fr; }
+}
+
 /* Optional: Landscape phones keep two-column grid */
 @media (min-width: 480px) and (max-width: 670px) and (orientation: landscape) {
   .grid-cards {
@@ -666,7 +674,7 @@ section {
       border-radius: 18px;
       padding: 24px 28px;
       margin-bottom: 36px;
-      color: #f8f8f8;
+      color: #f0ebeb;
       box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
     }
 
@@ -689,7 +697,7 @@ section {
       border-radius: 14px;
       padding: 16px 18px;
       text-align: center;
-      backdrop-filter: blur(6px);
+      backdrop-filter: blur(3px);
       border: 1px solid rgba(255, 255, 255, 0.2);
       box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
     }
@@ -700,7 +708,7 @@ section {
       font-weight: 600;
       letter-spacing: 0.5px;
       text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.85);
+      color: rgba(223, 226, 231, 0.85);
     }
 
     .record-value {
@@ -711,9 +719,47 @@ section {
 
     .record-owner {
       margin: 6px 0 0;
-      font-size: 0.9rem;
+      font-size: 1.3rem;
       letter-spacing: 0.3px;
-      color: rgba(255, 255, 255, 0.78);
+      color: rgb(101, 255, 106);
+    }
+
+    .record-card--hof,
+    .record-card--hos {
+      text-align: center;
+    }
+
+    .record-card--hof .record-list,
+    .record-card--hos .record-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 0.95rem;
+    }
+
+    .record-card--hof .record-list li,
+    .record-card--hos .record-list li {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.18);
+      padding: 6px 10px;
+      border-radius: 10px;
+    }
+
+    .record-card--hof .record-list li span,
+    .record-card--hos .record-list li span {
+      font-weight: 700;
+      color: #ffd700;
+      min-width: 45px;
+    }
+
+    .record-card--hos .record-list li span {
+      color: #ff7a7a;
+      min-width: 45px;
     }
 
     @media (max-width: 520px) {
@@ -722,7 +768,7 @@ section {
       }
 
       .record-value {
-        font-size: 1.6rem;
+        font-size: 1.8rem;
       }
     }
 
@@ -740,7 +786,7 @@ section {
     .team-inner {
       position: relative;
       width: 100%;
-      height: 300px;
+      height: 100%;
       transition: transform 0.8s;
       transform-style: preserve-3d;
     }
@@ -752,8 +798,8 @@ section {
     .team-front,
     .team-back {
       position: absolute;
-      width: 100%;
-      height: 100%;
+      width: 200px;
+      height: 220px;
       backface-visibility: hidden;
       border-radius: 16px;
       overflow: hidden;
@@ -811,15 +857,28 @@ section {
       opacity: 0.88;
     }
 
+    .team-badge {
+      position: absolute;
+      right: 12px;
+      font-size: 1.25rem;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));
+      pointer-events: none;
+    }
+
+    .team-badge--champ { top: 10px; }
+    .team-badge--shame { top: 10px; }
+
     .team-back {
       background: #fff;
       transform: rotateY(180deg);
-      padding: 20px;
+      padding: 10px;
       display: flex;
       flex-direction: column;
       justify-content: center;
       text-align: center;
       color: #222;
+      height: 225px;
+      width: 200px;
     }
 
     .team-back h4 {
@@ -828,8 +887,8 @@ section {
     }
 
     .team-back p {
-      margin: 4px 0;
-      font-size: 0.95rem;
+      margin: 2px 0;
+      font-size: 0.85rem;
     }
 
     @media (max-width: 480px) {
@@ -939,7 +998,7 @@ section {
 
 /* Base card look (scoped) */
 .leaderboard-page .stats-cards .card {
-  color: #56b7cf;
+  color: #2db0d1;
   border-radius: 14px;
   padding: 18px 22px;
   text-align: center;
@@ -1061,3 +1120,13 @@ section {
 /* Fine text helpers you already use */
 .top-score { font-size: 1.05rem; font-weight: 700; color: #fff; margin-top: 4px; }
 .low-score { font-weight: 700; }
+/* Teams: compact 2-up layout on small phones */
+@media (min-width: 360px) and (max-width: 480px) {
+  .teams-page .teams-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .teams-page .team-inner { height: 220px; }
+  .teams-page .team-front-overlay h3 { font-size: 1rem; }
+  .teams-page .team-front-overlay p { font-size: 0.85rem; opacity: 0.8; }
+}
+@media (max-width: 359px) {
+  .teams-page .teams-grid { grid-template-columns: 1fr; }
+}
